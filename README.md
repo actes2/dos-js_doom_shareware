@@ -7,6 +7,8 @@ I don't believe it can load custom WAD's but you're more than welcome to try, yo
 
 ## How do I run it?
 
+Clone the repository somewhere and navigate to the root of the repository.
+
 If you have python installed you can simply run:
 `python -m http.server 8000`
 
