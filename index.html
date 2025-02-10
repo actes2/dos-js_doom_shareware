@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- js-dos style sheet -->
+<link rel="stylesheet" href="https://v8.js-dos.com/latest/js-dos.css">
+<!-- js-dos -->
+<script src="https://v8.js-dos.com/latest/js-dos.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <h1>Doom Shareware edition</h1>
+    <div id="dos" style="width: 100vw; height: 60vw;"></div>
+</body>
+
+<script>
+    const dosboxConf = `
+        [autoexec]
+        @echo off
+        mount c .
+        c:
+        cd DOOM
+        DOOM
+    `;
+
+    async function fetchFile(url) {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        return new Uint8Array(arrayBuffer);
+    }
+
+    async function startDos() {
+        
+        const doomExe = await fetchFile('./doom/doom.exe');
+        const doom1wad = await fetchFile('./doom/DOOM1.WAD');
+
+        
+        window.dosInstance = Dos(document.getElementById('dos'), {
+            dosboxConf: dosboxConf,
+            initFs: [
+                { path: 'doom/doom.exe', contents: doomExe },
+                { path: 'doom/DOOM1.wad', contents: doom1wad },
+            ],
+            onEvent: (event, ci) => {
+                if (event === 'ci-ready') {
+                    // Command Interface is ready
+                    dosInstance.setTheme("dark");
+                    dosInstance.setKiosk(true);
+                    
+                }
+            },
+        });
+        dosInstance.setAutoStart(true);
+    }
+   
+    startDos();
+</script>
+</html>
